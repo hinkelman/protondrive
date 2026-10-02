@@ -12,6 +12,8 @@ that is not officially supported by Proton.
 
 Useful links:
 
+- <https://hinkelman.github.io/protondrive/>
+
 - <https://github.com/hinkelman/protondrive>
 
 - Report bugs at <https://github.com/hinkelman/protondrive/issues>
