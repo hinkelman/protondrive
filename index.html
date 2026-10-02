@@ -261,7 +261,7 @@
 <td>
 <code><a href="reference/pd_size.html">pd_size()</a></code>, <code><a href="reference/pd_invitations.html">pd_invitations()</a></code>, <code><a href="reference/pd_share.html">pd_leave()</a></code>
 </td>
-<td>Proton-specific</td>
+<td>Proton-specific; <code><a href="reference/pd_size.html">pd_size()</a></code> needs a CLI newer than 0.8.0</td>
 </tr>
 </tbody>
 </table>
@@ -285,6 +285,93 @@
 <h2 id="status">Status<a class="anchor" aria-label="anchor" href="#status"></a>
 </h2>
 <p>Both the Proton Drive SDK and the CLI are pre-release, and Proton plans a cryptographic migration around the end of 2026. Keep the CLI up to date (<code><a href="reference/pd_cli_path.html">pd_cli_version()</a></code> tells you whether a newer one exists). protondrive’s interface may also change.</p>
+<div class="section level3">
+<h3 id="live-testing">Live testing<a class="anchor" aria-label="anchor" href="#live-testing"></a>
+</h3>
+<p>The automated tests use a simulated CLI, so they don’t need a Proton account. Separately, protondrive has been tested against a real Proton account with <strong>Proton Drive CLI 0.8.0</strong> (SDK js 0.21.0) on Linux, in October 2026:</p>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr>
+<th>area</th>
+<th>functions</th>
+<th>result</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Sign-in</td>
+<td>
+<code><a href="reference/pd_auth.html">pd_auth()</a></code>, <code><a href="reference/pd_auth.html">pd_has_auth()</a></code>
+</td>
+<td>✅ works</td>
+</tr>
+<tr>
+<td>Finding files</td>
+<td>
+<code><a href="reference/pd_ls.html">pd_ls()</a></code> (including <code>recursive = TRUE</code>), <code><a href="reference/pd_get.html">pd_get()</a></code> by path and by ID, <code><a href="reference/pd_reveal.html">pd_reveal()</a></code>
+</td>
+<td>✅ works</td>
+</tr>
+<tr>
+<td>Upload and download</td>
+<td>
+<code><a href="reference/pd_upload.html">pd_upload()</a></code>, <code><a href="reference/pd_upload.html">pd_put()</a></code> (new revision, same ID), <code><a href="reference/pd_download.html">pd_download()</a></code>, <code><a href="reference/pd_read_string.html">pd_read_string()</a></code>
+</td>
+<td>✅ works</td>
+</tr>
+<tr>
+<td>Organising</td>
+<td>
+<code><a href="reference/pd_mkdir.html">pd_mkdir()</a></code>, <code><a href="reference/pd_cp.html">pd_cp()</a></code>, <code><a href="reference/pd_mv.html">pd_rename()</a></code>, <code><a href="reference/pd_mv.html">pd_mv()</a></code>, <code><a href="reference/pd_trash.html">pd_trash()</a></code>, <code><a href="reference/pd_trash.html">pd_untrash()</a></code>, <code><a href="reference/pd_rm.html">pd_rm()</a></code>
+</td>
+<td>✅ works</td>
+</tr>
+<tr>
+<td>Public links</td>
+<td>
+<code><a href="reference/pd_share_link.html">pd_share_link()</a></code> (with password and expiration), <code><a href="reference/pd_share_link.html">pd_link()</a></code>, <code><a href="reference/pd_share_link.html">pd_unshare_link()</a></code>
+</td>
+<td>✅ works</td>
+</tr>
+<tr>
+<td>Sharing with people</td>
+<td>
+<code><a href="reference/pd_share.html">pd_share()</a></code>, changing a role, <code><a href="reference/pd_share.html">pd_unshare()</a></code>, <code><a href="reference/pd_share.html">pd_sharing()</a></code>
+</td>
+<td>✅ works, including invitations to non-Proton addresses</td>
+</tr>
+<tr>
+<td>Folder size</td>
+<td><code><a href="reference/pd_size.html">pd_size()</a></code></td>
+<td>⚠️ needs a newer CLI: 0.8.0 has no <code>filesystem size</code> command</td>
+</tr>
+<tr>
+<td>Invitations from others</td>
+<td>
+<code><a href="reference/pd_invitations.html">pd_invitations()</a></code>, <code><a href="reference/pd_invitations.html">pd_accept_invitation()</a></code>, <code><a href="reference/pd_invitations.html">pd_reject_invitation()</a></code>, <code><a href="reference/pd_share.html">pd_leave()</a></code>
+</td>
+<td>⏳ not yet tested</td>
+</tr>
+<tr>
+<td>Emptying the trash</td>
+<td><code><a href="reference/pd_trash.html">pd_empty_trash()</a></code></td>
+<td>⏳ not yet tested</td>
+</tr>
+</tbody>
+</table>
+<p>Some limits come from Proton itself:</p>
+<ul>
+<li>
+<strong>Proton Docs and Sheets can’t be downloaded</strong> with <code><a href="reference/pd_download.html">pd_download()</a></code> or the <code>pd_read_*()</code> functions; the CLI skips them.</li>
+<li>
+<strong>Re-sharing doesn’t resend email.</strong> A new invitee gets one invitation email; calling <code><a href="reference/pd_share.html">pd_share()</a></code> again for them only changes their role.</li>
+<li>
+<strong>You can’t invite yourself.</strong> Proton rejects addresses that belong to your own account.</li>
+</ul>
+</div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

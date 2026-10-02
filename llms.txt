@@ -113,7 +113,7 @@ pd_trash(f)
 | `drive_share()` | [`pd_share()`](https://hinkelman.github.io/protondrive/reference/pd_share.md), [`pd_unshare()`](https://hinkelman.github.io/protondrive/reference/pd_share.md), [`pd_sharing()`](https://hinkelman.github.io/protondrive/reference/pd_share.md) |  |
 | `drive_share_anyone()`, `drive_link()` | [`pd_share_link()`](https://hinkelman.github.io/protondrive/reference/pd_share_link.md), [`pd_link()`](https://hinkelman.github.io/protondrive/reference/pd_share_link.md) | password and expiry supported |
 | `local_drive_quiet()`, `with_drive_quiet()` | [`local_pd_quiet()`](https://hinkelman.github.io/protondrive/reference/local_pd_quiet.md), [`with_pd_quiet()`](https://hinkelman.github.io/protondrive/reference/local_pd_quiet.md) |  |
-| — | [`pd_size()`](https://hinkelman.github.io/protondrive/reference/pd_size.md), [`pd_invitations()`](https://hinkelman.github.io/protondrive/reference/pd_invitations.md), [`pd_leave()`](https://hinkelman.github.io/protondrive/reference/pd_share.md) | Proton-specific |
+| — | [`pd_size()`](https://hinkelman.github.io/protondrive/reference/pd_size.md), [`pd_invitations()`](https://hinkelman.github.io/protondrive/reference/pd_invitations.md), [`pd_leave()`](https://hinkelman.github.io/protondrive/reference/pd_share.md) | Proton-specific; [`pd_size()`](https://hinkelman.github.io/protondrive/reference/pd_size.md) needs a CLI newer than 0.8.0 |
 
 Not available: `drive_find()` and full-text search, because the SDK does
 not offer search yet. Also not available: `drive_browse()`, and
@@ -147,6 +147,37 @@ date
 ([`pd_cli_version()`](https://hinkelman.github.io/protondrive/reference/pd_cli_path.md)
 tells you whether a newer one exists). protondrive’s interface may also
 change.
+
+### Live testing
+
+The automated tests use a simulated CLI, so they don’t need a Proton
+account. Separately, protondrive has been tested against a real Proton
+account with **Proton Drive CLI 0.8.0** (SDK js 0.21.0) on Linux, in
+October 2026:
+
+| area | functions | result |
+|----|----|----|
+| Sign-in | [`pd_auth()`](https://hinkelman.github.io/protondrive/reference/pd_auth.md), [`pd_has_auth()`](https://hinkelman.github.io/protondrive/reference/pd_auth.md) | ✅ works |
+| Finding files | [`pd_ls()`](https://hinkelman.github.io/protondrive/reference/pd_ls.md) (including `recursive = TRUE`), [`pd_get()`](https://hinkelman.github.io/protondrive/reference/pd_get.md) by path and by ID, [`pd_reveal()`](https://hinkelman.github.io/protondrive/reference/pd_reveal.md) | ✅ works |
+| Upload and download | [`pd_upload()`](https://hinkelman.github.io/protondrive/reference/pd_upload.md), [`pd_put()`](https://hinkelman.github.io/protondrive/reference/pd_upload.md) (new revision, same ID), [`pd_download()`](https://hinkelman.github.io/protondrive/reference/pd_download.md), [`pd_read_string()`](https://hinkelman.github.io/protondrive/reference/pd_read_string.md) | ✅ works |
+| Organising | [`pd_mkdir()`](https://hinkelman.github.io/protondrive/reference/pd_mkdir.md), [`pd_cp()`](https://hinkelman.github.io/protondrive/reference/pd_cp.md), [`pd_rename()`](https://hinkelman.github.io/protondrive/reference/pd_mv.md), [`pd_mv()`](https://hinkelman.github.io/protondrive/reference/pd_mv.md), [`pd_trash()`](https://hinkelman.github.io/protondrive/reference/pd_trash.md), [`pd_untrash()`](https://hinkelman.github.io/protondrive/reference/pd_trash.md), [`pd_rm()`](https://hinkelman.github.io/protondrive/reference/pd_rm.md) | ✅ works |
+| Public links | [`pd_share_link()`](https://hinkelman.github.io/protondrive/reference/pd_share_link.md) (with password and expiration), [`pd_link()`](https://hinkelman.github.io/protondrive/reference/pd_share_link.md), [`pd_unshare_link()`](https://hinkelman.github.io/protondrive/reference/pd_share_link.md) | ✅ works |
+| Sharing with people | [`pd_share()`](https://hinkelman.github.io/protondrive/reference/pd_share.md), changing a role, [`pd_unshare()`](https://hinkelman.github.io/protondrive/reference/pd_share.md), [`pd_sharing()`](https://hinkelman.github.io/protondrive/reference/pd_share.md) | ✅ works, including invitations to non-Proton addresses |
+| Folder size | [`pd_size()`](https://hinkelman.github.io/protondrive/reference/pd_size.md) | ⚠️ needs a newer CLI: 0.8.0 has no `filesystem size` command |
+| Invitations from others | [`pd_invitations()`](https://hinkelman.github.io/protondrive/reference/pd_invitations.md), [`pd_accept_invitation()`](https://hinkelman.github.io/protondrive/reference/pd_invitations.md), [`pd_reject_invitation()`](https://hinkelman.github.io/protondrive/reference/pd_invitations.md), [`pd_leave()`](https://hinkelman.github.io/protondrive/reference/pd_share.md) | ⏳ not yet tested |
+| Emptying the trash | [`pd_empty_trash()`](https://hinkelman.github.io/protondrive/reference/pd_trash.md) | ⏳ not yet tested |
+
+Some limits come from Proton itself:
+
+- **Proton Docs and Sheets can’t be downloaded** with
+  [`pd_download()`](https://hinkelman.github.io/protondrive/reference/pd_download.md)
+  or the `pd_read_*()` functions; the CLI skips them.
+- **Re-sharing doesn’t resend email.** A new invitee gets one invitation
+  email; calling
+  [`pd_share()`](https://hinkelman.github.io/protondrive/reference/pd_share.md)
+  again for them only changes their role.
+- **You can’t invite yourself.** Proton rejects addresses that belong to
+  your own account.
 
 # Package index
 
