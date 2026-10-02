@@ -1,0 +1,42 @@
+url: ~
+template:
+  bootstrap: 5
+
+reference:
+- title: Sign in
+  contents:
+  - pd_auth
+  - pd_cli_path
+- title: Find and inspect
+  contents:
+  - pd_ls
+  - pd_get
+  - pd_reveal
+  - pd_size
+- title: Upload, download, read
+  contents:
+  - pd_upload
+  - pd_download
+  - pd_read_string
+- title: Organise
+  contents:
+  - pd_mkdir
+  - pd_cp
+  - pd_mv
+  - pd_trash
+  - pd_rm
+- title: Share
+  contents:
+  - pd_share
+  - pd_share_link
+  - pd_invitations
+- title: Dribbles and IDs
+  contents:
+  - dribble
+  - as_dribble
+  - is_dribble
+  - as_id
+- title: Helpers
+  contents:
+  - local_pd_quiet
+  - pd_available
