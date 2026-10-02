@@ -11,6 +11,7 @@ Manage files on Proton Drive from R. Functions mirror the 'googledrive' package:
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://hinkelman.github.io/protondrive/}
   \item \url{https://github.com/hinkelman/protondrive}
   \item Report bugs at \url{https://github.com/hinkelman/protondrive/issues}
 }

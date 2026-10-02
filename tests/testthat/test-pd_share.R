@@ -44,6 +44,11 @@ test_that("pd_sharing() tidies sharing info, including none", {
   expect_named(out, c("email", "role", "status", "invited_by", "invitation_time"))
   expect_s3_class(out$invitation_time, "POSIXct")
 
+  # What CLI 0.8.0 really prints for an item that was never shared.
+  local_fake_cli("sharing status" = "undefined\n")
+  expect_equal(nrow(pd_sharing(fake_dribble("a", 1))), 0)
+  expect_equal(pd_link(fake_dribble("a", 1)), NA_character_)
+
   local_fake_cli("sharing status" = "null")
   expect_equal(nrow(pd_sharing(fake_dribble("a", 1))), 0)
 })
@@ -117,6 +122,15 @@ test_that("invitations can be listed, accepted, and rejected", {
 
   local_fake_cli("invitation list" = list())
   expect_equal(nrow(pd_invitations()), 0)
+})
+
+test_that("pd_size() explains when the CLI lacks the size command", {
+  # CLI 0.8.0 has no `filesystem size`.
+  local_fake_cli("filesystem size" = cli_fail("Command not found: filesystem size"))
+  expect_error(
+    pd_size(fake_dribble("data", 1, type = "folder")),
+    class = "protondrive_unsupported"
+  )
 })
 
 test_that("pd_size() reports folder sizes", {

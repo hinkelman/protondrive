@@ -71,3 +71,7 @@ test_that("quiet mode silences status messages but not errors", {
   expect_silent(f())
   expect_message(pd_inform("hello"), "hello")
 })
+
+test_that("the literal `undefined` printed by the CLI parses as NULL", {
+  expect_null(parse_cli_json("undefined\n"))
+})

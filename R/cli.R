@@ -133,6 +133,18 @@ check_cli_status <- function(out, what, call = rlang::caller_env()) {
   message <- cli_error_message(out$stderr)
   details <- transfer_failures(out$stdout)
 
+  if (startsWith(message, "Command not found")) {
+    cli::cli_abort(
+      c(
+        "Your Proton Drive CLI doesn't support {.code proton-drive {what}}.",
+        "i" = "It may need a newer CLI than the one installed. Check with
+               {.fun pd_cli_version}."
+      ),
+      class = c("protondrive_unsupported", "protondrive_error"),
+      call = call
+    )
+  }
+
   if (grepl("login first", message, fixed = TRUE)) {
     cli::cli_abort(
       c(
@@ -188,7 +200,9 @@ transfer_failures <- function(stdout) {
 
 parse_cli_json <- function(text, call = rlang::caller_env()) {
   text <- trimws(text %||% "")
-  if (!nzchar(text)) {
+  # `JSON.stringify(undefined)` is not JSON; the CLI prints it as the literal
+  # `undefined`, for example for the sharing status of an unshared item.
+  if (!nzchar(text) || identical(text, "undefined")) {
     return(NULL)
   }
   if (jsonlite::validate(text)) {
