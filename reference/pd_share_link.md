@@ -46,7 +46,9 @@ pd_unshare_link(file)
 - expiration:
 
   Optional expiration, as a `Date`, a `POSIXct`, or an ISO 8601 string
-  such as `"2026-12-31"`.
+  such as `"2026-12-31"` or `"2026-12-31T17:00:00Z"`. A date without a
+  time means the link works through the end of that day (23:59:59) in
+  your local time zone.
 
 ## Value
 

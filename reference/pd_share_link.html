@@ -99,7 +99,9 @@ link, in addition to having the URL.</p></dd>
 
 <dt id="arg-expiration">expiration<a class="anchor" aria-label="anchor" href="#arg-expiration"></a></dt>
 <dd><p>Optional expiration, as a <code>Date</code>, a <code>POSIXct</code>, or an
-ISO 8601 string such as <code>"2026-12-31"</code>.</p></dd>
+ISO 8601 string such as <code>"2026-12-31"</code> or <code>"2026-12-31T17:00:00Z"</code>. A
+date without a time means the link works through the end of that day
+(23:59:59) in your local time zone.</p></dd>
 
 </dl></div>
     <div class="section level2">
