@@ -1,8 +1,11 @@
 # The fake download writes `content` under the node's name in the folder the
-# CLI is given, as the real CLI does.
+# CLI is given, as the real CLI does. It writes bytes, not text, so the
+# content is identical on every platform (`writeLines()` would use CRLF line
+# endings on Windows).
 fake_download <- function(name, content = "hello") {
   function(pos, ...) {
-    writeLines(content, file.path(pos[[2]], name))
+    bytes <- charToRaw(paste0(content, "\n", collapse = ""))
+    writeBin(bytes, file.path(pos[[2]], name))
     list(transferredItems = 1, transferredBytes = 6, skippedItems = 0)
   }
 }
