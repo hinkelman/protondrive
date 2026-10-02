@@ -11,7 +11,7 @@ Description: Manage files on Proton Drive from R. Functions mirror the
     <https://github.com/ProtonDriveApps/sdk>. This is a third-party package
     that is not officially supported by Proton.
 License: MIT + file LICENSE
-URL: https://github.com/hinkelman/protondrive
+URL: https://hinkelman.github.io/protondrive/, https://github.com/hinkelman/protondrive
 BugReports: https://github.com/hinkelman/protondrive/issues
 Depends: 
     R (>= 4.1)
