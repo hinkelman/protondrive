@@ -114,7 +114,9 @@ pd_leave <- function(file) {
 #' @param password Optional password that people must enter to open the
 #'   link, in addition to having the URL.
 #' @param expiration Optional expiration, as a `Date`, a `POSIXct`, or an
-#'   ISO 8601 string such as `"2026-12-31"`.
+#'   ISO 8601 string such as `"2026-12-31"` or `"2026-12-31T17:00:00Z"`. A
+#'   date without a time means the link works through the end of that day
+#'   (23:59:59) in your local time zone.
 #'
 #' @return
 #' * `pd_share_link()`, `pd_link()`: The URL as a string.
@@ -202,13 +204,22 @@ format_expiration <- function(expiration, call = rlang::caller_env()) {
   if (is.null(expiration)) {
     return(NULL)
   }
+  if (length(expiration) != 1 || is.na(expiration)) {
+    cli::cli_abort("{.arg expiration} must be a single date or time.", call = call)
+  }
+  # The CLI reads a bare date as midnight UTC at the *start* of that day,
+  # which in the Americas is the previous evening. A date means "through
+  # this day" to people, so send the end of that day in local time instead.
+  if (is.character(expiration) && grepl("^\\d{4}-\\d{2}-\\d{2}$", expiration)) {
+    expiration <- as.Date(expiration)
+  }
+  if (inherits(expiration, "Date")) {
+    expiration <- as.POSIXct(paste(format(expiration), "23:59:59"), tz = "")
+  }
   if (inherits(expiration, "POSIXt")) {
     return(format(expiration, "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"))
   }
-  if (inherits(expiration, "Date")) {
-    return(format(expiration, "%Y-%m-%d"))
-  }
-  if (is.character(expiration) && length(expiration) == 1) {
+  if (is.character(expiration)) {
     return(expiration)
   }
   cli::cli_abort(

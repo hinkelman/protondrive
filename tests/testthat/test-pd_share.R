@@ -65,12 +65,13 @@ test_that("pd_unshare() removes some or everyone", {
 })
 
 test_that("pd_share_link() creates links with options", {
+  withr::local_timezone("America/Los_Angeles")
   log <- local_fake_cli("sharing set-url" = sharing_info("https://drive.proton.me/urls/X#Y"))
   file <- fake_dribble("a", 1)
   url <- pd_share_link(file, password = "pw", expiration = as.Date("2026-12-31"))
   expect_equal(url, "https://drive.proton.me/urls/X#Y")
   args <- log$calls[[1]]
-  expect_equal(option_value(args, "expiration"), "2026-12-31")
+  expect_equal(option_value(args, "expiration"), "2027-01-01T07:59:59Z")
   expect_equal(option_value(args, "password"), "pw")
   expect_equal(option_value(args, "role"), "viewer")
 })
@@ -92,12 +93,26 @@ test_that("pd_unshare_link() and pd_leave() call the CLI", {
 
 test_that("format_expiration() handles dates and times", {
   expect_null(format_expiration(NULL))
-  expect_equal(format_expiration("2026-01-01"), "2026-01-01")
   expect_equal(
     format_expiration(as.POSIXct("2026-01-01 12:00:00", tz = "UTC")),
     "2026-01-01T12:00:00Z"
   )
+  expect_equal(format_expiration("2026-01-01T12:00:00Z"), "2026-01-01T12:00:00Z")
   expect_error(format_expiration(1), "expiration")
+  expect_error(format_expiration(Sys.Date() + 0:1), "single")
+  expect_error(format_expiration(as.Date(NA)), "single")
+})
+
+test_that("a date means the end of that day in local time", {
+  withr::local_timezone("America/Los_Angeles")
+  # 23:59:59 Pacific (UTC-8 in winter) is 07:59:59 UTC the next day.
+  expect_equal(format_expiration(as.Date("2026-12-31")), "2027-01-01T07:59:59Z")
+  expect_equal(format_expiration("2026-12-31"), "2027-01-01T07:59:59Z")
+  # Daylight saving time (UTC-7) is respected.
+  expect_equal(format_expiration(as.Date("2026-07-04")), "2026-07-05T06:59:59Z")
+
+  withr::local_timezone("Asia/Tokyo")
+  expect_equal(format_expiration(as.Date("2026-12-31")), "2026-12-31T14:59:59Z")
 })
 
 test_that("invitations can be listed, accepted, and rejected", {

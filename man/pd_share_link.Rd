@@ -27,7 +27,9 @@ one-row \link{dribble}.}
 link, in addition to having the URL.}
 
 \item{expiration}{Optional expiration, as a \code{Date}, a \code{POSIXct}, or an
-ISO 8601 string such as \code{"2026-12-31"}.}
+ISO 8601 string such as \code{"2026-12-31"} or \code{"2026-12-31T17:00:00Z"}. A
+date without a time means the link works through the end of that day
+(23:59:59) in your local time zone.}
 }
 \value{
 \itemize{
