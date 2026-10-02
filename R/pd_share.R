@@ -7,6 +7,12 @@
 #' * `pd_sharing()` reports who has access and any pending invitations.
 #' * `pd_leave()` gives up your access to an item someone shared with you.
 #'
+#' New invitees get an invitation email from Proton, whether or not they
+#' have a Proton account. Calling `pd_share()` again for someone who already
+#' has access or a pending invitation just changes their role; no second
+#' email is sent. You can't share with an address that belongs to your own
+#' Proton account.
+#'
 #' @param file A file or folder, as a path, an ID marked with [as_id()], or a
 #'   one-row [dribble].
 #' @param emails Character vector of email addresses.
