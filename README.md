@@ -2,6 +2,7 @@
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![R-CMD-check](https://github.com/hinkelman/protondrive/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/hinkelman/protondrive/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 protondrive lets you work with files on [Proton Drive](https://proton.me/drive) from R. Its interface is modelled on [googledrive](https://googledrive.tidyverse.org): if you know `drive_ls()`, `drive_upload()`, and the dribble, you already know `pd_ls()`, `pd_upload()`, and protondrive's dribble.
