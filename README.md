@@ -93,7 +93,7 @@ pd_trash(f)
 | `drive_share()` | `pd_share()`, `pd_unshare()`, `pd_sharing()` | |
 | `drive_share_anyone()`, `drive_link()` | `pd_share_link()`, `pd_link()` | password and expiry supported |
 | `local_drive_quiet()`, `with_drive_quiet()` | `local_pd_quiet()`, `with_pd_quiet()` | |
-| — | `pd_size()`, `pd_invitations()`, `pd_leave()` | Proton-specific |
+| — | `pd_size()`, `pd_invitations()`, `pd_leave()` | Proton-specific; `pd_size()` needs a CLI newer than 0.8.0 |
 
 Not available: `drive_find()` and full-text search, because the SDK does not offer search yet. Also not available: `drive_browse()`, and Google-specific features such as shared drives and file conversion.
 
@@ -107,3 +107,25 @@ Not available: `drive_find()` and full-text search, because the SDK does not off
 ## Status
 
 Both the Proton Drive SDK and the CLI are pre-release, and Proton plans a cryptographic migration around the end of 2026. Keep the CLI up to date (`pd_cli_version()` tells you whether a newer one exists). protondrive's interface may also change.
+
+### Live testing
+
+The automated tests use a simulated CLI, so they don't need a Proton account. Separately, protondrive has been tested against a real Proton account with **Proton Drive CLI 0.8.0** (SDK js 0.21.0) on Linux, in October 2026:
+
+| area | functions | result |
+|---|---|---|
+| Sign-in | `pd_auth()`, `pd_has_auth()` | ✅ works |
+| Finding files | `pd_ls()` (including `recursive = TRUE`), `pd_get()` by path and by ID, `pd_reveal()` | ✅ works |
+| Upload and download | `pd_upload()`, `pd_put()` (new revision, same ID), `pd_download()`, `pd_read_string()` | ✅ works |
+| Organising | `pd_mkdir()`, `pd_cp()`, `pd_rename()`, `pd_mv()`, `pd_trash()`, `pd_untrash()`, `pd_rm()` | ✅ works |
+| Public links | `pd_share_link()` (with password and expiration), `pd_link()`, `pd_unshare_link()` | ✅ works |
+| Sharing with people | `pd_share()`, changing a role, `pd_unshare()`, `pd_sharing()` | ✅ works, including invitations to non-Proton addresses |
+| Folder size | `pd_size()` | ⚠️ needs a newer CLI: 0.8.0 has no `filesystem size` command |
+| Invitations from others | `pd_invitations()`, `pd_accept_invitation()`, `pd_reject_invitation()`, `pd_leave()` | ⏳ not yet tested |
+| Emptying the trash | `pd_empty_trash()` | ⏳ not yet tested |
+
+Some limits come from Proton itself:
+
+- **Proton Docs and Sheets can't be downloaded** with `pd_download()` or the `pd_read_*()` functions; the CLI skips them.
+- **Re-sharing doesn't resend email.** A new invitee gets one invitation email; calling `pd_share()` again for them only changes their role.
+- **You can't invite yourself.** Proton rejects addresses that belong to your own account.
